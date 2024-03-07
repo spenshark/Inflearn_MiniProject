@@ -13,7 +13,7 @@ public class MemberResponse {
 
     private String name;
     private String teamName;
-    private String role;
+    private Role role;
     private LocalDate workStartDate;
     private LocalDate birthday;
 }

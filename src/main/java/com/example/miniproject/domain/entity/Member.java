@@ -1,5 +1,9 @@
 package com.example.miniproject.domain.entity;
 
+import com.example.miniproject.domain.dto.member.MemberRequest;
+import com.example.miniproject.domain.dto.member.MemberResponse;
+import com.example.miniproject.domain.dto.team.TeamResponse;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,27 +21,42 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column(name = "team_name")
     private String teamName;
 
-    @Column
-    private String role;
+    @Column(nullable = false)
+    @JsonProperty
+    private Role role;
 
-    @Column
+    @Column(nullable = false)
     private LocalDate birthday;
 
-    @Column(name = "work_state_date")
+    @Column(nullable = false, name = "work_state_date")
     private LocalDate workStartDate;
 
 
-    public Member(String name, String teamName, String role, LocalDate workStartDate, LocalDate birthday) {
+    public Member(String name, String teamName, Role role, LocalDate workStartDate, LocalDate birthday) {
         this.name = name;
         this.teamName = teamName;
         this.role = role;
         this.workStartDate = workStartDate;
         this.birthday = birthday;
+    }
+
+    public MemberResponse toDto(){
+        return new MemberResponse(this.name, this.teamName, this.getRole(), this.getWorkStartDate(), this.getBirthday());
+    }
+
+    public static Member toEntity(MemberRequest request){
+        return new Member(
+                request.getName(),
+                request.getTeamName(),
+                request.getRole(),
+                request.getWorkStartDate(),
+                request.getBirthday()
+        );
     }
 }

@@ -23,13 +23,7 @@ public class MemberService {
 
     public List<MemberResponse> getMember(){
         return memberRepository.findAll().stream()
-                .map(member -> new MemberResponse(
-                        member.getName(),
-                        member.getTeamName(),
-                        member.getRole(),
-                        member.getWorkStartDate(),
-                        member.getBirthday()
-                )).collect(Collectors.toList());
+                .map(Member::toDto).collect(Collectors.toList());
     }
 
     @Transactional
@@ -38,17 +32,16 @@ public class MemberService {
         Team team = teamRepository.findByName(request.getTeamName())
                 .orElseThrow(() -> new IllegalArgumentException("해당 이름의 팀이 없습니다: " + request.getTeamName()));
 
-        memberRepository.save(new Member(
-                request.getName(),
-                request.getTeamName(),
-                request.getRole(),
-                request.getWorkStartDate(),
-                request.getBirthday()
-                ));
+        Role role = request.getRole();
 
-        if(request.getRole().equals("MANAGER")){
-            team.setManager(request.getName());
-            teamRepository.save(team);
+        memberRepository.save(Member.toEntity(request));
+
+        if(role.equals(Role.MANAGER)){
+            if(team.getManagerName() == null){
+                team.setManager(request.getName());
+                teamRepository.save(team);
+            }
+            else throw new IllegalArgumentException("이미 매니저가 존재합니다.");
         }
         team.addMemberCount();
         teamRepository.save(team);
