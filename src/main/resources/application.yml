@@ -1,9 +1,4 @@
-
 spring:
-  config:
-    activate:
-      on-profile: local
-
   datasource:
     url: "jdbc:h2:mem:library;MODE=MYSQL;NON_KEYWORDS=USER"
     username: "sa"
@@ -27,3 +22,15 @@ spring:
   config:
     activate:
       on-profile: dev
+
+  profiles:
+    include: mysql
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect

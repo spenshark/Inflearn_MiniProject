@@ -19,11 +19,7 @@ public class TeamService {
 
     public List<TeamResponse> getTeam(){
         return teamRepository.findAll().stream()
-                .map(team -> new TeamResponse(
-                        team.getName(),
-                        team.getManagerName(),
-                        team.getMemberCount()
-                )).collect(Collectors.toList());
+                .map(Team::toDto).collect(Collectors.toList());
     }
 
     @Transactional

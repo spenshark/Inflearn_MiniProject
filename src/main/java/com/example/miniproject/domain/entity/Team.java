@@ -1,5 +1,7 @@
 package com.example.miniproject.domain.entity;
 
+import com.example.miniproject.domain.dto.member.MemberRequest;
+import com.example.miniproject.domain.dto.team.TeamResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,5 +38,9 @@ public class Team {
 
     public void setManager(String name){
         this.managerName = name;
+    }
+
+    public TeamResponse toDto(){
+        return new TeamResponse(this.name, this.managerName, this.memberCount);
     }
 }
